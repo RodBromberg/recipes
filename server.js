@@ -1,20 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config({ path: "variables.env" });
-const Recipe = require("./models/Recipe");
 const User = require("./models/User");
+const path = require("path");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { graphiqlExpress, graphqlExpress } = require("apollo-server-express");
 const { makeExecutableSchema } = require("graphql-tools");
-const bcrypt = require("bcrypt");
 const { typeDefs } = require("./schema");
 const { resolvers } = require("./resolvers");
-
-// const passport = require('passport')
-// const FacebookStrategy = require('passport-facebook')
-// const keys = reqyire('../config')
-// const chalk = require('chalk')
 
 // create graphql schema
 const schema = makeExecutableSchema({
@@ -35,7 +29,7 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://front-end.foteekofficial.now.sh",
   credentials: true
 };
 
@@ -55,7 +49,7 @@ app.use(async (req, res, next) => {
 });
 
 // create graphiql application
-app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
+// app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
 // connect schemas with GraphQL
 app.use(
@@ -63,12 +57,19 @@ app.use(
   graphqlExpress(({ currentUser }) => ({
     schema,
     context: {
-      Recipe,
       User,
       currentUser
     }
   }))
 );
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 4444;
 

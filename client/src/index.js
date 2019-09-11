@@ -19,7 +19,7 @@ import { ApolloProvider } from "react-apollo";
 import { onError } from "apollo-link-error";
 
 const client = new ApolloClient({
-  uri: "http://localhost:4444/graphql",
+  uri: "https://react-recipes-apollos.herokuapp.com/graphql",
   fetchOptions: {
     credentials: "include"
   },
