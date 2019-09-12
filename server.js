@@ -16,7 +16,7 @@ const schema = makeExecutableSchema({
   resolvers
 });
 
-// connects to database
+// connects to databaseff
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true })
   .then(() => {
