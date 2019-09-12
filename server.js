@@ -29,7 +29,7 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-  origin: "https://front-end.foteekofficial.now.sh",
+  origin: "http://localhost:3000",
   credentials: true
 };
 
