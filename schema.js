@@ -1,7 +1,6 @@
 // provide types for schema
 // needs to matchup with mongoose model
 exports.typeDefs = `
-
 type Recipe{
     _id: ID
     name: String!
@@ -24,7 +23,7 @@ type User{
 
 type Query {
     getAllRecipes: [Recipe]
-
+    getRecipe(_id: ID!): Recipe
     getCurrentUser: User
 }
 
@@ -38,6 +37,4 @@ type Mutation {
     signupUser(username: String!, email: String!, password: String!): Token
 
 }
-
 `;
-//     signinUser(username: String!, password: String!): Token

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import ReactDOM from "react-dom";
 import {
   BrowserRouter as Router,
@@ -9,17 +9,20 @@ import {
 import "./index.css";
 
 import App from "./components/App";
-
+import Navbar from "./components/Navbar";
+import Search from "./components/Recipe/Search";
 import Signin from "./components/Auth/Signin";
-
 import Signup from "./components/Auth/Signup";
 import withSession from "./components/withSession";
+import AddRecipe from "./components/Recipe/AddRecipe";
+import RecipePage from "./components/Recipe/RecipePage";
+import Profile from "./components/Profile/Profile";
+
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
-import { onError } from "apollo-link-error";
 
 const client = new ApolloClient({
-  uri: "https://react-recipe-apolloo.herokuapp.com/graphql",
+  uri: "http://localhost:4444/graphql",
   fetchOptions: {
     credentials: "include"
   },
@@ -31,7 +34,6 @@ const client = new ApolloClient({
       }
     });
   },
-
   onError: ({ networkError }) => {
     if (networkError) {
       console.log("Network Error", networkError);
@@ -39,14 +41,24 @@ const client = new ApolloClient({
   }
 });
 
-const Root = () => (
+const Root = ({ refetch, session }) => (
   <Router>
-    <Switch>
-      <Route path="/" exact component={App} />
-      <Route path="/signin" component={Signin} />
-      <Route path="/signup" component={Signup} />
-      <Redirect to="/" />
-    </Switch>
+    <Fragment>
+      <Navbar session={session} />
+      <Switch>
+        <Route path="/" exact component={App} />
+        <Route path="/search" component={Search} />
+        <Route path="/signin" render={() => <Signin refetch={refetch} />} />
+        <Route path="/signup" render={() => <Signup refetch={refetch} />} />
+        <Route
+          path="/recipe/add"
+          render={() => <AddRecipe session={session} />}
+        />
+        <Route path="/recipes/:_id" component={RecipePage} />
+        <Route path="/profile" component={Profile} />
+        <Redirect to="/" />
+      </Switch>
+    </Fragment>
   </Router>
 );
 
