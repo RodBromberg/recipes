@@ -1,10 +1,13 @@
 import { gql } from "apollo-boost";
 
-// queries id,name,catgeory
+import { recipeFragments } from "./fragments";
+
+/* Recipes Queries */
 export const GET_ALL_RECIPES = gql`
   query {
     getAllRecipes {
       _id
+      imageUrl
       name
       category
     }
@@ -14,23 +17,28 @@ export const GET_ALL_RECIPES = gql`
 export const GET_RECIPE = gql`
   query($_id: ID!) {
     getRecipe(_id: $_id) {
+      ...CompleteRecipe
+    }
+  }
+  ${recipeFragments.recipe}
+`;
+
+export const SEARCH_RECIPES = gql`
+  query($searchTerm: String) {
+    searchRecipes(searchTerm: $searchTerm) {
       _id
       name
-      category
-      description
-      instructions
-      createdDate
       likes
-      username
     }
   }
 `;
 
-// Recipes Mutations
+/* Recipes Mutations */
 
 export const ADD_RECIPE = gql`
   mutation(
     $name: String!
+    $imageUrl: String!
     $description: String!
     $category: String!
     $instructions: String!
@@ -38,23 +46,70 @@ export const ADD_RECIPE = gql`
   ) {
     addRecipe(
       name: $name
+      imageUrl: $imageUrl
       description: $description
       category: $category
       instructions: $instructions
       username: $username
     ) {
+      ...CompleteRecipe
+    }
+  }
+  ${recipeFragments.recipe}
+`;
+
+export const LIKE_RECIPE = gql`
+  mutation($_id: ID!, $username: String!) {
+    likeRecipe(_id: $_id, username: $username) {
+      ...LikeRecipe
+    }
+  }
+  ${recipeFragments.like}
+`;
+
+export const UNLIKE_RECIPE = gql`
+  mutation($_id: ID!, $username: String!) {
+    unlikeRecipe(_id: $_id, username: $username) {
+      ...LikeRecipe
+    }
+  }
+  ${recipeFragments.like}
+`;
+
+export const DELETE_USER_RECIPE = gql`
+  mutation($_id: ID!) {
+    deleteUserRecipe(_id: $_id) {
       _id
-      name
-      category
-      description
-      instructions
-      createdDate
-      likes
     }
   }
 `;
 
-// User Queries
+export const UPDATE_USER_RECIPE = gql`
+  mutation(
+    $_id: ID!
+    $name: String!
+    $imageUrl: String!
+    $description: String!
+    $category: String!
+  ) {
+    updateUserRecipe(
+      _id: $_id
+      name: $name
+      imageUrl: $imageUrl
+      description: $description
+      category: $category
+    ) {
+      _id
+      name
+      likes
+      category
+      imageUrl
+      description
+    }
+  }
+`;
+
+/* User Queries */
 
 export const GET_CURRENT_USER = gql`
   query {
@@ -62,11 +117,28 @@ export const GET_CURRENT_USER = gql`
       username
       joinDate
       email
+      favorites {
+        _id
+        name
+      }
     }
   }
 `;
 
-// User Mutations
+export const GET_USER_RECIPES = gql`
+  query($username: String!) {
+    getUserRecipes(username: $username) {
+      _id
+      name
+      likes
+      imageUrl
+      category
+      description
+    }
+  }
+`;
+
+/* User Mutations */
 
 export const SIGNIN_USER = gql`
   mutation($username: String!, $password: String!) {

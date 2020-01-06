@@ -34,7 +34,7 @@ const app = express();
 //   origin: "http://localhost:3000",
 //   credentials: true
 // };
-app.use(cors());
+app.use(cors("*"));
 
 // Set up JWT authentication middleware
 app.use(async (req, res, next) => {
@@ -51,11 +51,9 @@ app.use(async (req, res, next) => {
 });
 
 // Create GraphiQL application
-app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
+// app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
 // Connect schemas with GraphQL
-// Recipe, User, currentUser referenced in schema
-// Resolvers sets up functions to grab schema data
 app.use(
   "/graphql",
   bodyParser.json(),
@@ -68,6 +66,22 @@ app.use(
     }
   }))
 );
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 4444;
 

@@ -2,10 +2,10 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 import { Mutation } from "react-apollo";
-import Error from "../../components/Auth/Error";
+import Error from "../Error";
 import { SIGNUP_USER } from "../../queries";
 
-const intitialState = {
+const initialState = {
   username: "",
   email: "",
   password: "",
@@ -13,25 +13,21 @@ const intitialState = {
 };
 
 class Signup extends React.Component {
-  state = {
-    ...intitialState
-  };
+  state = { ...initialState };
 
   clearState = () => {
-    this.setState({ ...intitialState });
+    this.setState({ ...initialState });
   };
 
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({
-      [name]: value
-    });
+  handleChange = event => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
   };
 
   handleSubmit = (event, signupUser) => {
     event.preventDefault();
     signupUser().then(async ({ data }) => {
-      console.log(data);
+      // console.log(data);
       localStorage.setItem("token", data.signupUser.token);
       await this.props.refetch();
       this.clearState();
@@ -51,7 +47,7 @@ class Signup extends React.Component {
 
     return (
       <div className="App">
-        <h2 className="App">Signup Page</h2>
+        <h2 className="App">Signup</h2>
         <Mutation
           mutation={SIGNUP_USER}
           variables={{ username, email, password }}
@@ -72,7 +68,7 @@ class Signup extends React.Component {
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="Email Address"
                   value={email}
                   onChange={this.handleChange}
                 />

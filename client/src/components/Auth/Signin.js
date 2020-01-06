@@ -2,34 +2,30 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 import { Mutation } from "react-apollo";
-import Error from "../../components/Auth/Error";
+import Error from "../Error";
 import { SIGNIN_USER } from "../../queries";
 
-const intitialState = {
+const initialState = {
   username: "",
   password: ""
 };
 
 class Signin extends React.Component {
-  state = {
-    ...intitialState
-  };
+  state = { ...initialState };
 
   clearState = () => {
-    this.setState({ ...intitialState });
+    this.setState({ ...initialState });
   };
 
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({
-      [name]: value
-    });
+  handleChange = event => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
   };
 
   handleSubmit = (event, signinUser) => {
     event.preventDefault();
     signinUser().then(async ({ data }) => {
-      console.log(data);
+      // console.log(data);
       localStorage.setItem("token", data.signinUser.token);
       await this.props.refetch();
       this.clearState();
@@ -48,7 +44,7 @@ class Signin extends React.Component {
 
     return (
       <div className="App">
-        <h2 className="App">Signin Page</h2>
+        <h2 className="App">Signin</h2>
         <Mutation mutation={SIGNIN_USER} variables={{ username, password }}>
           {(signinUser, { data, loading, error }) => {
             return (

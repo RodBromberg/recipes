@@ -10,10 +10,10 @@ import "./index.css";
 
 import App from "./components/App";
 import Navbar from "./components/Navbar";
-import Search from "./components/Recipe/Search";
+import withSession from "./components/withSession";
 import Signin from "./components/Auth/Signin";
 import Signup from "./components/Auth/Signup";
-import withSession from "./components/withSession";
+import Search from "./components/Recipe/Search";
 import AddRecipe from "./components/Recipe/AddRecipe";
 import RecipePage from "./components/Recipe/RecipePage";
 import Profile from "./components/Profile/Profile";
@@ -22,7 +22,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 
 const client = new ApolloClient({
-  uri: "http://localhost:4444/graphql",
+  uri: "http://recipes-reacts.herokuapp.com/graphql",
   fetchOptions: {
     credentials: "include"
   },
@@ -35,9 +35,9 @@ const client = new ApolloClient({
     });
   },
   onError: ({ networkError }) => {
-    if (networkError) {
-      console.log("Network Error", networkError);
-    }
+    // if (networkError) {
+    //   localStorage.setItem("token", "");
+    // }
   }
 });
 
@@ -46,7 +46,7 @@ const Root = ({ refetch, session }) => (
     <Fragment>
       <Navbar session={session} />
       <Switch>
-        <Route path="/" exact component={App} />
+        <Route style={{ width: "2px" }} path="/" exact component={App} />
         <Route path="/search" component={Search} />
         <Route path="/signin" render={() => <Signin refetch={refetch} />} />
         <Route path="/signup" render={() => <Signup refetch={refetch} />} />
@@ -55,7 +55,7 @@ const Root = ({ refetch, session }) => (
           render={() => <AddRecipe session={session} />}
         />
         <Route path="/recipes/:_id" component={RecipePage} />
-        <Route path="/profile" component={Profile} />
+        <Route path="/profile" render={() => <Profile session={session} />} />
         <Redirect to="/" />
       </Switch>
     </Fragment>
@@ -70,7 +70,3 @@ ReactDOM.render(
   </ApolloProvider>,
   document.getElementById("root")
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA

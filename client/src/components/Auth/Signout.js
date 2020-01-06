@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+
 import { ApolloConsumer } from "react-apollo";
 
 const handleSignout = (client, history) => {
@@ -11,7 +12,6 @@ const handleSignout = (client, history) => {
 const Signout = ({ history }) => (
   <ApolloConsumer>
     {client => {
-      console.log(client);
       return (
         <button onClick={() => handleSignout(client, history)}>Signout</button>
       );
