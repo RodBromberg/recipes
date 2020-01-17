@@ -52,7 +52,7 @@ app.use(async (req, res, next) => {
 
 // Create GraphiQL application
 // app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
-
+// ff
 // Connect schemas with GraphQL
 app.use(
   "/graphql",
